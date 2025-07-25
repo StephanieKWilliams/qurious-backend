@@ -28,10 +28,16 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+ALLOWED_ORIGINS_ENV = os.getenv("ALLOWED_ORIGINS", "")
+ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS_ENV.split(",") if origin.strip()]
+
+if not ALLOWED_ORIGINS:
+    print("⚠️ WARNING: No CORS origins defined! CORS requests may fail.")
+
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://qurious-seven.vercel.app/"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
